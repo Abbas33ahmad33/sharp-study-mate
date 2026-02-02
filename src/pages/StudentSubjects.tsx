@@ -218,24 +218,19 @@ const StudentSubjects = () => {
 
     try {
       // Fetch all data in parallel for better performance
-      const [subjectsResult, chaptersResult, mcqCountsResult, attemptsResult] = await Promise.all([
+      // OPTIMIZATION: Removed separate mcqs query (select * from mcqs) which was reading 3000+ rows
+      // consistently. Added `mcqs(count)` to chapters query to get the aggregate directly.
+      const [subjectsResult, chaptersResult, attemptsResult] = await Promise.all([
         supabase.from("subjects").select("id, name, description").order("name"),
-        supabase.from("chapters").select("id, name, description, key_points, subject_id").order("order_index"),
-        supabase.from("mcqs").select("chapter_id"),
+        supabase.from("chapters").select("id, name, description, key_points, subject_id, mcqs(count)").order("order_index"),
         supabase.from("test_attempts").select("id, chapter_id, percentage, completed_at").eq("student_id", user.id).order("completed_at", { ascending: false })
       ]);
 
       const subjectsData = subjectsResult.data || [];
       const chaptersData = chaptersResult.data || [];
-      const mcqsData = mcqCountsResult.data || [];
       const attemptsData = attemptsResult.data || [];
 
       // Create lookup maps for O(1) access
-      const mcqCountMap = new Map<string, number>();
-      mcqsData.forEach(mcq => {
-        mcqCountMap.set(mcq.chapter_id, (mcqCountMap.get(mcq.chapter_id) || 0) + 1);
-      });
-
       const attemptsByChapter = new Map<string, typeof attemptsData>();
       attemptsData.forEach(attempt => {
         if (!attemptsByChapter.has(attempt.chapter_id)) {
@@ -249,7 +244,9 @@ const StudentSubjects = () => {
         const subjectChapters = chaptersData.filter(ch => ch.subject_id === subject.id);
 
         const chaptersWithStats = subjectChapters.map(chapter => {
-          const mcq_count = mcqCountMap.get(chapter.id) || 0;
+          // Access the aggregated count from relation
+          // @ts-ignore - access runtime relationship property
+          const mcq_count = chapter.mcqs?.[0]?.count || 0;
           const chapterAttempts = attemptsByChapter.get(chapter.id) || [];
 
           let progress = 0;
