@@ -19,6 +19,7 @@ import TestInterface from "./pages/TestInterface";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTransition from "./components/PageTransition";
+import TopLoader from "./components/TopLoader";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <TopLoader />
         <PageTransition>
           <Routes>
             <Route path="/" element={<Index />} />

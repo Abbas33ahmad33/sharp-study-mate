@@ -23,6 +23,10 @@ export const useAuth = () => {
 
   const registerSession = useCallback(async (userId: string, token: string) => {
     try {
+      // Remove token temporarily to prevent Realtime listener from triggering "other device" logout
+      // during the cleanup of old sessions.
+      localStorage.removeItem("session_token");
+
       // First, delete any existing session for this user (force single session)
       await supabase
         .from("user_sessions")
@@ -53,7 +57,7 @@ export const useAuth = () => {
   const validateSession = useCallback(async (userId: string): Promise<boolean> => {
     try {
       const storedToken = localStorage.getItem("session_token");
-      
+
       // If no stored token, this is a fresh start - allow it
       if (!storedToken) return true;
 
@@ -146,7 +150,7 @@ export const useAuth = () => {
 
       if (session?.user) {
         const storedToken = localStorage.getItem("session_token");
-        
+
         if (!storedToken) {
           // No token stored - register a new session
           const newToken = generateSessionToken();
@@ -186,7 +190,7 @@ export const useAuth = () => {
         },
         (payload) => {
           const storedToken = localStorage.getItem("session_token");
-          
+
           if (payload.eventType === "DELETE") {
             // Session was deleted - likely logged in elsewhere
             if (storedToken) {
