@@ -1,4 +1,4 @@
-import { Home, BookOpen, FileText, User } from "lucide-react";
+import { Home, BookOpen, FileText, User, Wallet } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,6 +25,11 @@ const BottomNav = () => {
             label: "Subjects",
             icon: BookOpen,
             path: "/student/subjects",
+        },
+        {
+            label: "Fees",
+            icon: Wallet,
+            path: "/student/payments",
         },
         {
             label: "Exams",

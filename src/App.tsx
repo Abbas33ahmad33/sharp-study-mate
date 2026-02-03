@@ -19,6 +19,7 @@ import StudentExamInterface from "./pages/StudentExamInterface";
 import TestInterface from "./pages/TestInterface";
 import StudentInstitutes from "./pages/StudentInstitutes";
 import StudentExams from "./pages/StudentExams";
+import StudentPayments from "./pages/StudentPayments";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTransition from "./components/PageTransition";
@@ -138,6 +139,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <StudentProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/payments"
+              element={
+                <ProtectedRoute>
+                  <StudentPayments />
                 </ProtectedRoute>
               }
             />
