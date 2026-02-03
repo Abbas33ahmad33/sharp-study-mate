@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2, XCircle, ArrowRight, Home, SkipForward } from "lucide-react";
 import { toast } from "sonner";
+import MathText from "@/components/MathText";
 
 interface MCQ {
   id: string;
@@ -68,7 +69,7 @@ const TestInterface = () => {
     }
 
     const currentMCQ = mcqs[currentIndex];
-    
+
     try {
       // Use secure server-side function to check answer
       const { data: isCorrectAnswer, error } = await supabase
@@ -90,7 +91,7 @@ const TestInterface = () => {
         isCorrect: isCorrectAnswer || false,
       });
       setAnswers(newAnswers);
-      
+
       // Remove from skipped if it was skipped before
       if (skippedQuestions.has(currentIndex)) {
         const newSkipped = new Set(skippedQuestions);
@@ -108,7 +109,7 @@ const TestInterface = () => {
     const newSkipped = new Set(skippedQuestions);
     newSkipped.add(currentIndex);
     setSkippedQuestions(newSkipped);
-    
+
     // Move to next unanswered question or first skipped question
     moveToNextQuestion();
   };
@@ -123,7 +124,7 @@ const TestInterface = () => {
         return;
       }
     }
-    
+
     // Wrap around to find skipped questions from beginning
     for (let i = 0; i < currentIndex; i++) {
       if (!answers.has(mcqs[i].id)) {
@@ -133,7 +134,7 @@ const TestInterface = () => {
         return;
       }
     }
-    
+
     // All questions answered
     finishTest();
   };
@@ -264,23 +265,21 @@ const TestInterface = () => {
                 return (
                   <Card
                     key={mcq.id}
-                    className={`border-2 overflow-hidden ${
-                      wasSkipped 
-                        ? "border-muted" 
-                        : answer.isCorrect 
-                          ? "border-success" 
-                          : "border-destructive"
-                    }`}
+                    className={`border-2 overflow-hidden ${wasSkipped
+                      ? "border-muted"
+                      : answer.isCorrect
+                        ? "border-success"
+                        : "border-destructive"
+                      }`}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          wasSkipped 
-                            ? "bg-muted text-muted-foreground" 
-                            : answer.isCorrect 
-                              ? "bg-success text-success-foreground" 
-                              : "bg-destructive text-destructive-foreground"
-                        }`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${wasSkipped
+                          ? "bg-muted text-muted-foreground"
+                          : answer.isCorrect
+                            ? "bg-success text-success-foreground"
+                            : "bg-destructive text-destructive-foreground"
+                          }`}>
                           {wasSkipped ? (
                             <SkipForward className="w-5 h-5" />
                           ) : answer.isCorrect ? (
@@ -314,8 +313,8 @@ const TestInterface = () => {
             </div>
 
             {/* Back Button */}
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={() => navigate("/student")}
               className="w-full h-14 rounded-xl text-base font-semibold shadow-lg"
             >
@@ -343,9 +342,9 @@ const TestInterface = () => {
       <div className="sticky top-0 z-10 glass-strong border-b border-border/50 px-4 py-3 safe-top">
         <div className="flex items-center justify-between max-w-2xl mx-auto">
           <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => navigate("/student")}
               className="h-10 w-10 rounded-xl"
             >
@@ -378,7 +377,9 @@ const TestInterface = () => {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <span className="font-bold text-primary">Q{currentIndex + 1}</span>
                 </div>
-                <h3 className="text-lg font-semibold leading-relaxed">{currentMCQ.question}</h3>
+                <h3 className="text-lg font-semibold leading-relaxed">
+                  <MathText text={currentMCQ.question} />
+                </h3>
               </div>
             </CardContent>
           </Card>
@@ -390,24 +391,24 @@ const TestInterface = () => {
                 {["A", "B", "C", "D"].map((option, idx) => (
                   <div
                     key={option}
-                    className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-200 ${
-                      selectedOption === option 
-                        ? 'border-primary bg-primary/5 shadow-md' 
-                        : 'border-border/50 bg-card hover:border-primary/30 hover:bg-muted/30'
-                    }`}
+                    className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-200 ${selectedOption === option
+                      ? 'border-primary bg-primary/5 shadow-md'
+                      : 'border-border/50 bg-card hover:border-primary/30 hover:bg-muted/30'
+                      }`}
                   >
-                    <label 
+                    <label
                       htmlFor={`option-${option}`}
                       className="flex items-center gap-4 p-4 cursor-pointer"
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all ${
-                        selectedOption === option 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'
-                      }`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all ${selectedOption === option
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'
+                        }`}>
                         {option}
                       </div>
-                      <span className="flex-1 text-base">{currentMCQ[`option_${option.toLowerCase()}` as keyof MCQ]}</span>
+                      <span className="flex-1 text-base">
+                        <MathText text={currentMCQ[`option_${option.toLowerCase()}` as keyof MCQ]} />
+                      </span>
                       <RadioGroupItem value={option} id={`option-${option}`} className="sr-only" />
                     </label>
                   </div>
@@ -421,7 +422,7 @@ const TestInterface = () => {
 
                   let borderClass = "border-border/50 bg-card";
                   let iconBg = "bg-muted text-muted-foreground";
-                  
+
                   if (isSelected && isCorrect) {
                     borderClass = "border-success bg-success/5 shadow-md";
                     iconBg = "bg-success text-success-foreground";
@@ -439,7 +440,9 @@ const TestInterface = () => {
                           {isSelected && !isCorrect && <XCircle className="w-5 h-5" />}
                           {!isSelected && <span className="font-bold text-sm">{option}</span>}
                         </div>
-                        <span className="flex-1 text-base">{optionText}</span>
+                        <span className="flex-1 text-base">
+                          <MathText text={optionText} />
+                        </span>
                       </div>
                     </div>
                   );
@@ -476,17 +479,17 @@ const TestInterface = () => {
         <div className="max-w-2xl mx-auto space-y-3">
           {!showFeedback && !isCurrentAnswered ? (
             <div className="flex gap-3">
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={handleSkip}
                 className="flex-1 h-14 rounded-xl text-base font-semibold"
               >
                 <SkipForward className="mr-2 h-5 w-5" />
                 Skip
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 onClick={handleSubmit}
                 disabled={!selectedOption}
                 className="flex-1 h-14 rounded-xl text-base font-semibold shadow-lg"
@@ -495,8 +498,8 @@ const TestInterface = () => {
               </Button>
             </div>
           ) : showFeedback ? (
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleNext}
               className="w-full h-14 rounded-xl text-base font-semibold shadow-lg"
             >
@@ -510,8 +513,8 @@ const TestInterface = () => {
               )}
             </Button>
           ) : (
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleNext}
               className="w-full h-14 rounded-xl text-base font-semibold shadow-lg"
             >
@@ -527,9 +530,9 @@ const TestInterface = () => {
           )}
 
           {skippedQuestions.size > 0 && answeredCount > 0 && !showFeedback && (
-            <Button 
-              variant="secondary" 
-              size="lg" 
+            <Button
+              variant="secondary"
+              size="lg"
               onClick={finishTest}
               className="w-full h-12 rounded-xl font-medium"
             >

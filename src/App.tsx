@@ -12,10 +12,13 @@ import InstituteExamDetails from "./pages/InstituteExamDetails";
 import ExamAnalytics from "./pages/ExamAnalytics";
 import StudentHome from "./pages/StudentHome";
 import StudentSubjects from "./pages/StudentSubjects";
-import StudentExams from "./pages/StudentExams";
+import StudentSubjectDetails from "./pages/StudentSubjectDetails";
+
 import StudentProfile from "./pages/StudentProfile";
 import StudentExamInterface from "./pages/StudentExamInterface";
 import TestInterface from "./pages/TestInterface";
+import StudentInstitutes from "./pages/StudentInstitutes";
+import StudentExams from "./pages/StudentExams";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTransition from "./components/PageTransition";
@@ -95,6 +98,30 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <StudentSubjects />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/subject/:subjectId"
+              element={
+                <ProtectedRoute>
+                  <StudentSubjectDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/institutes"
+              element={
+                <ProtectedRoute>
+                  <StudentInstitutes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/exams"
+              element={
+                <ProtectedRoute>
+                  <StudentExams />
                 </ProtectedRoute>
               }
             />
