@@ -98,7 +98,7 @@ const PaymentRequestForm = ({ onSuccess }: PaymentRequestFormProps) => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="amount">Amount (₹)</Label>
+            <Label htmlFor="amount">Amount (Rs.)</Label>
             <Input
               id="amount"
               type="number"

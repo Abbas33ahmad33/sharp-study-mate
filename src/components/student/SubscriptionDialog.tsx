@@ -138,6 +138,19 @@ const SubscriptionDialog = ({ open, onOpenChange }: SubscriptionDialogProps) => 
                                     className="h-11"
                                 />
                             </form>
+
+                            {/* Additional Information */}
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                                <p className="text-[12px] leading-relaxed text-slate-500 dark:text-slate-400">
+                                    <span className="font-semibold text-slate-700 dark:text-slate-200 block mb-1">Important Note:</span>
+                                    Your fee is refundable as per the refund policy.
+                                </p>
+                                <div className="p-3 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl border border-blue-100/50 dark:border-blue-900/30">
+                                    <p className="text-[11px] leading-relaxed text-blue-700 dark:text-blue-300">
+                                        <strong>Qarz-e-Hasan:</strong> An interest-free support program is available for students who cannot afford the fee. For both (refund/support), please contact the admin.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <DialogFooter>

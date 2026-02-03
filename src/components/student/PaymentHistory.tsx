@@ -126,7 +126,7 @@ const PaymentHistory = () => {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">₹{payment.amount}</span>
+                    <span className="font-semibold">Rs.{payment.amount}</span>
                     <span className="text-xs text-muted-foreground">
                       via {getMethodLabel(payment.payment_method)}
                     </span>
