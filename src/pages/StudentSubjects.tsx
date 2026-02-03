@@ -293,6 +293,13 @@ const StudentSubjects = () => {
                 <div className="animate-fade-in">
                   <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome back! 👋</h2>
                   <p className="text-muted-foreground mt-1">Continue your learning journey</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+                    <p className="text-sm font-semibold bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+                      Small Steps. Big Success
+                    </p>
+                    <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+                  </div>
                 </div>
                 <JoinInstituteDialog onJoined={fetchMyInstitutes} />
               </div>

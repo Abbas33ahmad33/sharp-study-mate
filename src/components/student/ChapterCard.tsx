@@ -49,6 +49,16 @@ const ChapterCard = ({ chapter, onStart, onReset, accentColor = "text-slate-900 
                     </div>
 
                     <div className="flex items-center gap-2">
+                        {hasProgress && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={onReset}
+                                className="h-10 w-10 rounded-xl text-slate-400 hover:text-destructive hover:bg-destructive/5"
+                            >
+                                <RotateCcw className="h-4.5 w-4.5" />
+                            </Button>
+                        )}
                         <Button
                             onClick={onStart}
                             disabled={!chapter.mcq_count || chapter.mcq_count === 0}
@@ -62,16 +72,6 @@ const ChapterCard = ({ chapter, onStart, onReset, accentColor = "text-slate-900 
                         >
                             {chapter.mcq_count === 0 ? "Locked" : "Start"}
                         </Button>
-                        {hasProgress && (
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={onReset}
-                                className="h-10 w-10 rounded-xl text-slate-400 hover:text-destructive hover:bg-destructive/5"
-                            >
-                                <RotateCcw className="h-4.5 w-4.5" />
-                            </Button>
-                        )}
                     </div>
                 </div>
             </div>

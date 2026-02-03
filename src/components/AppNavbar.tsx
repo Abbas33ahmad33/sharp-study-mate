@@ -34,6 +34,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeSelector from "@/components/ThemeSelector";
+import SubscriptionDialog from "@/components/student/SubscriptionDialog";
 import {
   Collapsible,
   CollapsibleContent,
