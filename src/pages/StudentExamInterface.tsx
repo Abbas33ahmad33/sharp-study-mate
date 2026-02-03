@@ -23,6 +23,8 @@ interface ExamData {
   id: string;
   title: string;
   duration_minutes: number;
+  opens_at: string | null;
+  closes_at: string | null;
 }
 
 const StudentExamInterface = () => {
@@ -56,6 +58,18 @@ const StudentExamInterface = () => {
           handleSubmit(true);
           return 0;
         }
+
+        // Check if now reached closes_at
+        if (exam?.closes_at) {
+          const closesAt = new Date(exam.closes_at).getTime();
+          if (Date.now() >= closesAt) {
+            clearInterval(timer);
+            toast.warning("The exam window has closed.");
+            handleSubmit(true);
+            return 0;
+          }
+        }
+
         return prev - 1;
       });
     }, 1000);
@@ -84,11 +98,28 @@ const StudentExamInterface = () => {
       // Fetch exam details
       const { data: examData, error } = await supabase
         .from("institute_exams")
-        .select("id, title, duration_minutes, institute_id")
+        .select("id, title, duration_minutes, institute_id, opens_at, closes_at")
         .eq("id", examId)
-        .single();
+        .single() as any;
 
       if (error) throw error;
+
+      const now = Date.now();
+      const opensAt = examData.opens_at ? new Date(examData.opens_at).getTime() : null;
+      const closesAt = examData.closes_at ? new Date(examData.closes_at).getTime() : null;
+
+      if (opensAt && now < opensAt) {
+        toast.error(`This exam hasn't started yet. It will open at ${new Date(opensAt).toLocaleString()}`);
+        navigate("/student");
+        return;
+      }
+
+      if (closesAt && now > closesAt) {
+        toast.error("This exam has already ended.");
+        navigate("/student");
+        return;
+      }
+
       setExam(examData);
 
       // Check if student is enrolled in the institute
@@ -352,17 +383,15 @@ const StudentExamInterface = () => {
                 <button
                   key={opt}
                   onClick={() => handleSelectOption(opt)}
-                  className={`w-full p-4 text-left rounded-lg border transition-all ${
-                    isSelected
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
-                  }`}
+                  className={`w-full p-4 text-left rounded-lg border transition-all ${isSelected
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50"
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <span
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                        isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
-                      }`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
+                        }`}
                     >
                       {opt.toUpperCase()}
                     </span>
@@ -413,13 +442,12 @@ const StudentExamInterface = () => {
                 <button
                   key={q.id}
                   onClick={() => setCurrentIndex(i)}
-                  className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
-                    i === currentIndex
-                      ? "bg-primary text-primary-foreground"
-                      : answers[q.id]
+                  className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${i === currentIndex
+                    ? "bg-primary text-primary-foreground"
+                    : answers[q.id]
                       ? "bg-green-100 text-green-800 border border-green-300"
                       : "bg-muted hover:bg-muted/80"
-                  }`}
+                    }`}
                 >
                   {i + 1}
                 </button>

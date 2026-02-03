@@ -22,7 +22,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Trash2, Check } from "lucide-react";
+import { Plus, Trash2, Check, Upload, Download, Loader2 } from "lucide-react";
+import { useRef } from "react";
 
 interface ExamQuestionsManagerProps {
   examId: string;
@@ -76,6 +77,8 @@ export const ExamQuestionsManager = ({
   const [selectedMcqs, setSelectedMcqs] = useState<Set<string>>(new Set());
   const [instituteMcqs, setInstituteMcqs] = useState<InstituteMCQ[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Custom question form
   const [question, setQuestion] = useState("");
@@ -134,7 +137,7 @@ export const ExamQuestionsManager = ({
       .from("exam_mcqs")
       .select("mcq_id")
       .eq("exam_id", examId);
-    
+
     if (data) {
       setSelectedMcqs(new Set(data.map((d) => d.mcq_id)));
     }
@@ -151,7 +154,7 @@ export const ExamQuestionsManager = ({
 
   const toggleMcqSelection = async (mcqId: string) => {
     const newSelected = new Set(selectedMcqs);
-    
+
     if (newSelected.has(mcqId)) {
       // Remove from exam
       const { error } = await supabase
@@ -159,7 +162,7 @@ export const ExamQuestionsManager = ({
         .delete()
         .eq("exam_id", examId)
         .eq("mcq_id", mcqId);
-      
+
       if (!error) {
         newSelected.delete(mcqId);
         toast.success("Question removed from exam");
@@ -173,13 +176,13 @@ export const ExamQuestionsManager = ({
           mcq_id: mcqId,
           order_index: selectedMcqs.size,
         });
-      
+
       if (!error) {
         newSelected.add(mcqId);
         toast.success("Question added to exam");
       }
     }
-    
+
     setSelectedMcqs(newSelected);
   };
 
@@ -189,7 +192,7 @@ export const ExamQuestionsManager = ({
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       const { error } = await supabase.from("institute_mcqs").insert({
         institute_id: instituteId,
         exam_id: examId,
@@ -232,6 +235,147 @@ export const ExamQuestionsManager = ({
       toast.success("Question deleted");
       fetchInstituteMcqs();
     }
+  };
+
+  const downloadTemplate = () => {
+    const headers = "Question,Option A,Option B,Option C,Option D,Correct Option (A/B/C/D),Explanation (Optional)";
+    const example = '"What is the capital of France?","Paris","London","Berlin","Madrid","A","Paris is the capital."';
+    const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + example;
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "exam_mcq_template.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const parseCSV = (text: string) => {
+    // Handle both \n and \r\n line endings
+    const lines = text.split(/\r?\n/);
+    const result = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const parts: string[] = [];
+      let temp = '';
+      let inQuotes = false;
+
+      for (let j = 0; j < line.length; j++) {
+        const char = line[j];
+        if (char === '"') {
+          // Handle escaped quotes ""
+          if (inQuotes && line[j + 1] === '"') {
+            temp += '"';
+            j++; // Skip next quote
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          parts.push(temp.trim());
+          temp = '';
+        } else {
+          temp += char;
+        }
+      }
+      parts.push(temp.trim());
+
+      if (parts.length >= 6) {
+        // Clean up any remaining quotes around the parts
+        const cleanParts = parts.map(p => p.startsWith('"') && p.endsWith('"') ? p.slice(1, -1) : p);
+
+        result.push({
+          question: cleanParts[0],
+          option_a: cleanParts[1],
+          option_b: cleanParts[2],
+          option_c: cleanParts[3],
+          option_d: cleanParts[4],
+          correct_option: cleanParts[5]?.toLowerCase().trim().charAt(0) || 'a',
+          explanation: cleanParts[6] || null
+        });
+      }
+    }
+    return result;
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      try {
+        const text = e.target?.result as string;
+        const parsedMCQs = parseCSV(text);
+
+        if (parsedMCQs.length === 0) {
+          toast.error("No valid MCQs found in file");
+          setIsUploading(false);
+          return;
+        }
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const mcqDataArray = parsedMCQs.map(mcq => {
+          // Robust correct option fallback: look for A, B, C, or D
+          let correct = mcq.correct_option.toLowerCase().trim();
+          if (correct.includes('a') || correct === '1') correct = 'a';
+          else if (correct.includes('b') || correct === '2') correct = 'b';
+          else if (correct.includes('c') || correct === '3') correct = 'c';
+          else if (correct.includes('d') || correct === '4') correct = 'd';
+          else correct = 'a';
+
+          return {
+            ...mcq,
+            correct_option: correct,
+            institute_id: instituteId,
+            exam_id: examId,
+            created_by: user.id
+          };
+        });
+
+        const chunkSize = 50;
+        let successCount = 0;
+        let lastError = null;
+
+        console.log(`Starting bulk upload of ${mcqDataArray.length} MCQs in chunks of ${chunkSize}`);
+
+        for (let i = 0; i < mcqDataArray.length; i += chunkSize) {
+          const chunk = mcqDataArray.slice(i, i + chunkSize);
+          const { error } = await supabase.from("institute_mcqs").insert(chunk);
+
+          if (error) {
+            console.error(`Error uploading chunk ${i / chunkSize}:`, error);
+            lastError = error;
+          } else {
+            successCount += chunk.length;
+          }
+        }
+
+        if (successCount > 0) {
+          toast.success(`Successfully uploaded ${successCount} MCQs!`);
+          if (successCount < mcqDataArray.length) {
+            toast.warning(`Some MCQs (${mcqDataArray.length - successCount}) failed to upload. Check console for details.`);
+          }
+          fetchInstituteMcqs();
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        } else {
+          toast.error(`Failed to upload MCQs: ${lastError?.message || "Check file format"}`);
+        }
+      } catch (error: any) {
+        console.error("Upload error details:", error);
+        toast.error(`Error processing file: ${error.message || "Unknown error"}`);
+      } finally {
+        setIsUploading(false);
+      }
+    };
+
+    reader.readAsText(file);
   };
 
   const totalQuestions = selectedMcqs.size + instituteMcqs.length;
@@ -344,12 +488,67 @@ export const ExamQuestionsManager = ({
         </TabsContent>
 
         <TabsContent value="custom">
+          <input
+            type="file"
+            accept=".csv"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Add Custom Question</CardTitle>
+              <CardTitle className="text-lg">Add Custom Questions</CardTitle>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleAddCustomQuestion} className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* CSV UPLOAD SECTION */}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 text-center space-y-4 mb-6">
+                <div className="flex flex-col items-center gap-2">
+                  <Upload className="w-10 h-10 text-primary opacity-50" />
+                  <h3 className="font-bold text-lg text-primary">Bulk Import via CSV</h3>
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                    Save time by uploading hundreds of MCQs at once for this exam.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={downloadTemplate}
+                    className="gap-2"
+                  >
+                    <Download className="w-4 h-4" /> Template
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="gap-2 shadow-lg shadow-primary/20"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4" /> Select CSV File
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Or enter manually</span>
+                </div>
+              </div>
+
+              <form onSubmit={handleAddCustomQuestion} className="space-y-4 pt-4">
                 <div className="space-y-2">
                   <Label>Question</Label>
                   <Textarea

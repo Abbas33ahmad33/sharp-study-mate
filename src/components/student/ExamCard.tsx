@@ -3,12 +3,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface ExamCardProps {
     exam: {
         id: string;
         title: string;
         exam_date?: string;
+        opens_at?: string;
+        closes_at?: string;
         duration_minutes?: number;
         institutes: {
             name: string;
@@ -18,11 +21,45 @@ interface ExamCardProps {
 
 const ExamCard = ({ exam }: ExamCardProps) => {
     const navigate = useNavigate();
+    const now = new Date();
+    const opensAt = exam.opens_at ? new Date(exam.opens_at) : null;
+    const closesAt = exam.closes_at ? new Date(exam.closes_at) : null;
+
+    let status: 'upcoming' | 'live' | 'expired' = 'live';
+    let statusText = '';
+
+    if (opensAt && now < opensAt) {
+        status = 'upcoming';
+        statusText = `Opens: ${opensAt.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`;
+    } else if (closesAt && now > closesAt) {
+        status = 'expired';
+        statusText = 'Expired';
+    } else if (closesAt) {
+        status = 'live';
+        statusText = `Ends: ${closesAt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    const handleClick = () => {
+        if (status === 'upcoming') {
+            toast.error("This exam hasn't started yet");
+            return;
+        }
+        if (status === 'expired') {
+            toast.error("This exam has ended");
+            return;
+        }
+        navigate(`/exam/${exam.id}`);
+    };
 
     return (
         <Card
-            onClick={() => navigate(`/exam/${exam.id}`)}
-            className="relative cursor-pointer overflow-hidden border-0 h-[130px] sm:h-[160px] w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md transition-all duration-300 hover:shadow-lg active:scale-95 group rounded-xl"
+            onClick={handleClick}
+            className={`relative cursor-pointer overflow-hidden border-0 h-[140px] sm:h-[180px] w-full bg-gradient-to-br ${status === 'upcoming'
+                ? 'from-blue-500 to-indigo-600'
+                : status === 'expired'
+                    ? 'from-gray-500 to-gray-600 grayscale'
+                    : 'from-amber-500 to-orange-600'
+                } text-white shadow-md transition-all duration-300 hover:shadow-lg active:scale-95 group rounded-xl`}
         >
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
@@ -49,14 +86,15 @@ const ExamCard = ({ exam }: ExamCardProps) => {
 
                     {/* Info Pills */}
                     <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                        {statusText && (
+                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${status === 'live' ? 'bg-green-500/40' : 'bg-black/20'
+                                }`}>
+                                {statusText}
+                            </span>
+                        )}
                         {exam.duration_minutes && (
                             <span className="text-[8px] font-semibold bg-black/20 px-1.5 py-0.5 rounded text-white/90">
                                 {exam.duration_minutes}m
-                            </span>
-                        )}
-                        {exam.exam_date && (
-                            <span className="text-[8px] font-semibold bg-white/20 px-1.5 py-0.5 rounded text-white/90">
-                                {new Date(exam.exam_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                             </span>
                         )}
                     </div>

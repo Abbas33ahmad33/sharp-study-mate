@@ -28,6 +28,8 @@ interface ExamData {
   duration_minutes: number;
   is_active: boolean;
   institute_id: string;
+  opens_at: string | null;
+  closes_at: string | null;
 }
 
 interface StudentAttempt {
@@ -54,12 +56,14 @@ const InstituteExamDetails = () => {
   const [attempts, setAttempts] = useState<StudentAttempt[]>([]);
   const [questionCount, setQuestionCount] = useState(0);
   const [showQuestionsManager, setShowQuestionsManager] = useState(false);
-  
+
   // Edit form
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [examDate, setExamDate] = useState("");
+  const [opensAt, setOpensAt] = useState("");
+  const [closesAt, setClosesAt] = useState("");
   const [duration, setDuration] = useState(60);
 
   useEffect(() => {
@@ -82,10 +86,12 @@ const InstituteExamDetails = () => {
         .single();
 
       if (error) throw error;
-      setExam(examData);
+      setExam(examData as any);
       setTitle(examData.title);
       setDescription(examData.description || "");
       setExamDate(examData.exam_date ? examData.exam_date.split("T")[0] : "");
+      setOpensAt((examData as any).opens_at ? (examData as any).opens_at.slice(0, 16) : "");
+      setClosesAt((examData as any).closes_at ? (examData as any).closes_at.slice(0, 16) : "");
       setDuration(examData.duration_minutes || 60);
 
       // Fetch question counts
@@ -144,6 +150,8 @@ const InstituteExamDetails = () => {
           title,
           description: description || null,
           exam_date: examDate ? new Date(examDate).toISOString() : null,
+          opens_at: opensAt ? new Date(opensAt).toISOString() : null,
+          closes_at: closesAt ? new Date(closesAt).toISOString() : null,
           duration_minutes: duration,
         })
         .eq("id", exam.id);
@@ -250,11 +258,11 @@ const InstituteExamDetails = () => {
               <div className="text-2xl font-bold">
                 {attempts.length > 0
                   ? Math.round(
-                      attempts
-                        .filter((a) => a.is_submitted)
-                        .reduce((sum, a) => sum + (a.percentage || 0), 0) /
-                        attempts.filter((a) => a.is_submitted).length || 0
-                    )
+                    attempts
+                      .filter((a) => a.is_submitted)
+                      .reduce((sum, a) => sum + (a.percentage || 0), 0) /
+                    attempts.filter((a) => a.is_submitted).length || 0
+                  )
                   : 0}
                 %
               </div>
@@ -344,6 +352,24 @@ const InstituteExamDetails = () => {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label>Opens At</Label>
+                    <Input
+                      type="datetime-local"
+                      value={opensAt}
+                      onChange={(e) => setOpensAt(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Closes At</Label>
+                    <Input
+                      type="datetime-local"
+                      value={closesAt}
+                      onChange={(e) => setClosesAt(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label>Duration (minutes)</Label>
                     <Input
                       type="number"
@@ -391,11 +417,10 @@ const InstituteExamDetails = () => {
                         </TableCell>
                         <TableCell>
                           <span
-                            className={`text-xs px-2 py-1 rounded ${
-                              attempt.is_submitted
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
+                            className={`text-xs px-2 py-1 rounded ${attempt.is_submitted
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                              }`}
                           >
                             {attempt.is_submitted ? "Submitted" : "In Progress"}
                           </span>
