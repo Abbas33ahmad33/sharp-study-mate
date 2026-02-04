@@ -50,7 +50,7 @@ interface StudentAttempt {
 const InstituteExamDetails = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const { userRole } = useAuth();
+  const { userRole, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [exam, setExam] = useState<ExamData | null>(null);
   const [attempts, setAttempts] = useState<StudentAttempt[]>([]);
@@ -67,12 +67,19 @@ const InstituteExamDetails = () => {
   const [duration, setDuration] = useState(60);
 
   useEffect(() => {
-    if (userRole !== "institute" && userRole !== "admin") {
+    // Wait for loading to complete before checking role
+    if (loading) return;
+    
+    // Only redirect if role is loaded and not institute/admin
+    if (userRole !== null && userRole !== "institute" && userRole !== "admin") {
       navigate("/");
       return;
     }
-    fetchExamData();
-  }, [examId, userRole]);
+    
+    if (userRole === "institute" || userRole === "admin") {
+      fetchExamData();
+    }
+  }, [examId, userRole, loading]);
 
   const fetchExamData = async () => {
     if (!examId) return;
@@ -171,7 +178,7 @@ const InstituteExamDetails = () => {
     toast.success(`${label} copied!`);
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
