@@ -67,8 +67,8 @@ const InstituteExamDetails = () => {
   const [duration, setDuration] = useState(60);
 
   useEffect(() => {
-    // Wait for loading to complete before checking role
-    if (loading) return;
+    // Wait for auth to complete before checking role
+    if (authLoading) return;
     
     // Only redirect if role is loaded and not institute/admin
     if (userRole !== null && userRole !== "institute" && userRole !== "admin") {
@@ -79,7 +79,7 @@ const InstituteExamDetails = () => {
     if (userRole === "institute" || userRole === "admin") {
       fetchExamData();
     }
-  }, [examId, userRole, loading]);
+  }, [examId, userRole, authLoading]);
 
   const fetchExamData = async () => {
     if (!examId) return;
