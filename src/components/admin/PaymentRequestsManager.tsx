@@ -73,21 +73,8 @@ const PaymentRequestsManager = () => {
 
             if (updateError) throw updateError;
 
-            // If approved, upgrade user to premium
-            if (action === 'approved') {
-                const request = requests.find(r => r.id === requestId);
-                if (request) {
-                    const { error: roleError } = await supabase
-                        .from("user_roles")
-                        .update({
-                            subscription_tier: 'premium',
-                            subscription_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
-                        })
-                        .eq("user_id", request.user_id);
-
-                    if (roleError) throw roleError;
-                }
-            }
+            // Payment approved - status is already updated above
+            // Note: Add subscription logic here if subscription_tier column is added to profiles
 
             toast.success(`Payment request ${action} successfully!`);
             fetchPaymentRequests();
