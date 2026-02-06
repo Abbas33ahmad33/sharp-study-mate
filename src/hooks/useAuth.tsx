@@ -243,22 +243,23 @@ export const useAuth = () => {
     isSigningOut.current = true;
 
     try {
-      // Remove session from database
+      // Fire and forget session cleanup (non-critical)
       if (user?.id) {
-        await supabase
+        supabase
           .from("user_sessions")
           .delete()
-          .eq("user_id", user.id);
+          .eq("user_id", user.id)
+          .then(() => { }); // Don't await
       }
 
-      // Clear local state first
+      // Clear local state immediately for instant UI response
       localStorage.removeItem("session_token");
       setUser(null);
       setSession(null);
       setUserRole(null);
       setSessionToken(null);
 
-      // Perform global sign out out
+      // Perform global sign out 
       await supabase.auth.signOut({ scope: 'global' });
     } catch (error) {
       console.error("Error during sign out:", error);

@@ -404,6 +404,19 @@ export const AppNavbar = () => {
             {/* Theme Selector */}
             <ThemeSelector />
 
+            {/* QUICK LOGOUT SHORTCUT - Mobile Only */}
+            {user && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleSignOut}
+                className="md:hidden w-10 h-10 text-destructive hover:bg-destructive/10"
+                title="Sign Out"
+              >
+                <LogOut className="w-5 h-5" />
+              </Button>
+            )}
+
             {/* User Dropdown - Desktop */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -479,6 +492,18 @@ export const AppNavbar = () => {
 
                   {/* Mobile Nav Items */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-1">
+                    {/* QUICK ACTIONS - SIGN OUT AT TOP */}
+                    <div className="p-2 pt-0 mb-4 border-b">
+                      <Button
+                        variant="destructive"
+                        className="w-full h-12 justify-center gap-3 rounded-xl shadow-sm"
+                        onClick={() => { setMobileMenuOpen(false); handleSignOut(); }}
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Quick Sign Out
+                      </Button>
+                    </div>
+
                     {/* Dashboard - Always visible */}
                     <MobileNavSection
                       icon={Home}
@@ -611,14 +636,6 @@ export const AppNavbar = () => {
                     >
                       <Home className="w-4 h-4" />
                       Home Page
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      className="w-full h-12 justify-start gap-3"
-                      onClick={() => { setMobileMenuOpen(false); handleSignOut(); }}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
                     </Button>
                   </div>
                 </div>
