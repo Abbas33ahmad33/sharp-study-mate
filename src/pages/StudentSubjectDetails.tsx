@@ -29,6 +29,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Play } from "lucide-react";
+import MathText from "@/components/MathText";
 
 interface Chapter {
     id: string;
@@ -307,7 +308,16 @@ const StudentSubjectDetails = () => {
                                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                                         <span className="text-xs font-bold text-primary">{idx + 1}</span>
                                     </div>
-                                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">{point}</p>
+                                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap break-words">
+                                        {point.includes(":") ? (
+                                            <>
+                                                <span className="font-bold text-primary">{point.split(":")[0]}:</span>
+                                                <MathText text={point.split(":").slice(1).join(":")} />
+                                            </>
+                                        ) : (
+                                            <MathText text={point} />
+                                        )}
+                                    </div>
                                 </div>
                             ))
                         ) : (

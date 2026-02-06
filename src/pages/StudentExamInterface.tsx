@@ -376,9 +376,6 @@ const StudentExamInterface = () => {
         <Card className="border-0 shadow-lg bg-card overflow-hidden">
           <CardHeader className="p-6 sm:p-8 bg-muted/30">
             <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
-                <span className="font-bold text-lg text-primary">Q{currentIndex + 1}</span>
-              </div>
               <div className="flex-1">
                 <CardTitle className="text-xl sm:text-2xl font-semibold leading-relaxed tracking-tight text-foreground/90 break-words">
                   <MathText text={currentQuestion.question} />

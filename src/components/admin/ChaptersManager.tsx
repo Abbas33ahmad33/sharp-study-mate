@@ -212,14 +212,15 @@ const ChaptersManager = ({ onUpdate }: ChaptersManagerProps) => {
               <div className="space-y-2">
                 <Label htmlFor="keyPoints">Key Points</Label>
                 <div className="flex gap-2">
-                  <Input
+                  <Textarea
                     id="keyPoints"
                     value={newKeyPoint}
                     onChange={(e) => setNewKeyPoint(e.target.value)}
                     onKeyDown={handleKeyPointKeyDown}
                     placeholder="Add a key point and press Enter"
+                    className="min-h-[80px]"
                   />
-                  <Button type="button" variant="outline" onClick={addKeyPoint} size="icon">
+                  <Button type="button" variant="outline" onClick={addKeyPoint} size="icon" className="h-auto">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
