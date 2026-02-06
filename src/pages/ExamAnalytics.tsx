@@ -24,6 +24,7 @@ import {
   FileQuestion,
 } from "lucide-react";
 import { toast } from "sonner";
+import MathText from "@/components/MathText";
 
 interface StudentPerformance {
   student_id: string;
@@ -94,7 +95,7 @@ const ExamAnalytics = () => {
 
       // Fetch student profiles
       const performances: StudentPerformance[] = [];
-      
+
       for (const attempt of attempts || []) {
         const { data: profile } = await supabase
           .from("profiles")
@@ -124,7 +125,7 @@ const ExamAnalytics = () => {
       // Calculate question-level analytics
       if (attempts && attempts.length > 0) {
         const attemptIds = attempts.map(a => a.id);
-        
+
         const { data: allAnswers } = await supabase
           .from("exam_answers")
           .select("mcq_id, institute_mcq_id, is_correct")
@@ -133,9 +134,9 @@ const ExamAnalytics = () => {
         // Get unique MCQ IDs (both bank and custom)
         const bankMcqIds = [...new Set(allAnswers?.filter(a => a.mcq_id).map(a => a.mcq_id) || [])];
         const customMcqIds = [...new Set(allAnswers?.filter(a => a.institute_mcq_id).map(a => a.institute_mcq_id) || [])];
-        
+
         const questionStats: QuestionAnalytics[] = [];
-        
+
         // Process bank MCQs
         for (const mcqId of bankMcqIds) {
           const { data: mcq } = await supabase
@@ -381,9 +382,11 @@ const ExamAnalytics = () => {
                 {questionAnalytics.map((q, index) => (
                   <div key={q.mcq_id} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-start mb-2">
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <span className="text-sm text-muted-foreground">Question {index + 1}</span>
-                        <p className="font-medium">{q.question}</p>
+                        <p className="font-medium break-words leading-relaxed">
+                          <MathText text={q.question} />
+                        </p>
                       </div>
                       <Badge variant={q.success_rate >= 60 ? "default" : "destructive"}>
                         {q.success_rate.toFixed(1)}% success
@@ -423,9 +426,8 @@ const ExamAnalytics = () => {
                 {studentAnswers.map((answer, index) => (
                   <div
                     key={answer.id}
-                    className={`p-4 rounded-lg border-2 ${
-                      answer.is_correct ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"
-                    }`}
+                    className={`p-4 rounded-lg border-2 ${answer.is_correct ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"
+                      }`}
                   >
                     <div className="flex items-start gap-3">
                       {answer.is_correct ? (
@@ -433,9 +435,9 @@ const ExamAnalytics = () => {
                       ) : (
                         <XCircle className="w-5 h-5 text-red-600 mt-1" />
                       )}
-                      <div className="flex-1">
-                        <p className="font-medium mb-2">
-                          Q{index + 1}: {answer.mcqs?.question}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium mb-2 break-words leading-relaxed">
+                          Q{index + 1}: <MathText text={answer.mcqs?.question} />
                         </p>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>

@@ -175,26 +175,49 @@ const StudentHome = () => {
                                 <div className="grid grid-cols-1 gap-4">
 
 
-                                    <Card
-                                        className="group relative overflow-hidden rounded-[2.5rem] border-none shadow-xl shadow-slate-200/50 dark:shadow-black/20 bg-white dark:bg-slate-900 p-7 cursor-pointer transform transition-all active:scale-95 touch-manipulation"
-                                        onClick={() => navigate("/student/exams")}
-                                    >
-                                        <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-active:scale-110 transition-transform">
-                                            <Award className="w-40 h-40 -rotate-12" />
-                                        </div>
-                                        <div className="relative z-10 space-y-4">
-                                            <div className="bg-secondary/10 w-12 h-12 rounded-2xl flex items-center justify-center">
-                                                <TrendingUp className="w-6 h-6 text-secondary" />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <Card
+                                            className="group relative overflow-hidden rounded-[2.5rem] border-none shadow-xl shadow-slate-200/50 dark:shadow-black/20 bg-white dark:bg-slate-900 p-7 cursor-pointer transform transition-all active:scale-95 touch-manipulation"
+                                            onClick={() => navigate("/student/exams")}
+                                        >
+                                            <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-active:scale-110 transition-transform">
+                                                <Award className="w-40 h-40 -rotate-12" />
                                             </div>
-                                            <div>
-                                                <h3 className="text-2xl font-black tracking-tight">Mock Exams</h3>
-                                                <p className="text-slate-500 text-sm font-medium">Prepare for the real deal with institute-level mock tests.</p>
+                                            <div className="relative z-10 space-y-4">
+                                                <div className="bg-secondary/10 w-12 h-12 rounded-2xl flex items-center justify-center">
+                                                    <TrendingUp className="w-6 h-6 text-secondary" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-2xl font-black tracking-tight">Mock Exams</h3>
+                                                    <p className="text-slate-500 text-sm font-medium">Prepare for the real deal with institute-level mock tests.</p>
+                                                </div>
+                                                <Button variant="outline" className="w-full rounded-xl font-bold border-secondary/20 text-secondary hover:bg-secondary/5">
+                                                    View Exams <ChevronRight className="w-4 h-4 ml-1" />
+                                                </Button>
                                             </div>
-                                            <Button variant="outline" className="w-full rounded-xl font-bold border-secondary/20 text-secondary hover:bg-secondary/5">
-                                                View Exams <ChevronRight className="w-4 h-4 ml-1" />
-                                            </Button>
-                                        </div>
-                                    </Card>
+                                        </Card>
+
+                                        <Card
+                                            className="group relative overflow-hidden rounded-[2.5rem] border-none shadow-xl shadow-primary/10 bg-gradient-to-br from-primary/5 to-transparent dark:from-primary/10 dark:to-transparent p-7 cursor-pointer transform transition-all active:scale-95 touch-manipulation"
+                                            onClick={() => navigate("/student/leaderboard")}
+                                        >
+                                            <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-active:scale-110 transition-transform">
+                                                <Trophy className="w-40 h-40 -rotate-12" />
+                                            </div>
+                                            <div className="relative z-10 space-y-4">
+                                                <div className="bg-yellow-500/10 w-12 h-12 rounded-2xl flex items-center justify-center">
+                                                    <Trophy className="w-6 h-6 text-yellow-600" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-2xl font-black tracking-tight">Leaderboard</h3>
+                                                    <p className="text-slate-500 text-sm font-medium">See where you stand among students nationwide.</p>
+                                                </div>
+                                                <Button className="w-full rounded-xl font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
+                                                    View Rankings <ChevronRight className="w-4 h-4 ml-1" />
+                                                </Button>
+                                            </div>
+                                        </Card>
+                                    </div>
                                 </div>
                             </section>
 

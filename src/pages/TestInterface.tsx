@@ -370,15 +370,14 @@ const TestInterface = () => {
       {/* Question Content */}
       <div className="flex-1 overflow-y-auto px-4 py-5 pb-safe">
         <div className="max-w-2xl mx-auto space-y-5">
-          {/* Question Card */}
-          <Card className="border-0 shadow-elevated bg-card">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <span className="font-bold text-primary">Q{currentIndex + 1}</span>
+          <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm overflow-hidden">
+            <CardContent className="p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                  <span className="font-bold text-lg text-primary">Q{currentIndex + 1}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-base sm:text-lg font-semibold leading-relaxed break-words">
+                <div className="flex-1">
+                  <h3 className="text-xl sm:text-2xl font-semibold leading-relaxed tracking-tight text-foreground/90 break-words">
                     <MathText text={currentMCQ.question} />
                   </h3>
                 </div>
@@ -393,24 +392,26 @@ const TestInterface = () => {
                 {["A", "B", "C", "D"].map((option) => (
                   <div
                     key={option}
-                    className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-200 ${selectedOption === option
+                    className={`group relative overflow-hidden rounded-2xl border-2 transition-all duration-200 ${selectedOption === option
                       ? 'border-primary bg-primary/5 shadow-md'
                       : 'border-border/50 bg-card hover:border-primary/30 hover:bg-muted/30'
                       }`}
                   >
                     <label
                       htmlFor={`option-${option}`}
-                      className="flex items-start gap-3 p-4 cursor-pointer"
+                      className="flex items-start gap-4 p-4 sm:p-5 cursor-pointer"
                     >
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all ${selectedOption === option
-                        ? 'bg-primary text-primary-foreground'
+                      <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-base transition-all shadow-sm ${selectedOption === option
+                        ? 'bg-primary text-primary-foreground scale-105'
                         : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'
                         }`}>
                         {option}
                       </div>
-                      <span className="flex-1 text-sm sm:text-base pt-1.5 break-words leading-relaxed">
-                        <MathText text={currentMCQ[`option_${option.toLowerCase()}` as keyof MCQ]} />
-                      </span>
+                      <div className="flex-1 pt-1.5 min-w-0">
+                        <span className="text-base sm:text-lg leading-relaxed break-words whitespace-pre-wrap">
+                          <MathText text={currentMCQ[`option_${option.toLowerCase()}` as keyof MCQ] as string} />
+                        </span>
+                      </div>
                       <RadioGroupItem value={option} id={`option-${option}`} className="sr-only" />
                     </label>
                   </div>

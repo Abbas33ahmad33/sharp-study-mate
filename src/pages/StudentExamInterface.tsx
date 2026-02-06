@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Clock, ChevronLeft, ChevronRight, CheckCircle, AlertTriangle } from "lucide-react";
+import MathText from "@/components/MathText";
 
 interface MCQ {
   id: string;
@@ -43,7 +44,7 @@ const StudentExamInterface = () => {
   useEffect(() => {
     // Wait for auth to finish loading
     if (authLoading) return;
-    
+
     // Only redirect if auth is done and no user
     if (!user) {
       navigate("/auth");
@@ -372,14 +373,20 @@ const StudentExamInterface = () => {
 
       {/* Question */}
       <div className="max-w-4xl mx-auto p-4 space-y-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg leading-relaxed break-words">
-              <span className="text-primary font-bold mr-2">Q{currentIndex + 1}.</span>
-              {currentQuestion.question}
-            </CardTitle>
+        <Card className="border-0 shadow-lg bg-card overflow-hidden">
+          <CardHeader className="p-6 sm:p-8 bg-muted/30">
+            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                <span className="font-bold text-lg text-primary">Q{currentIndex + 1}</span>
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-xl sm:text-2xl font-semibold leading-relaxed tracking-tight text-foreground/90 break-words">
+                  <MathText text={currentQuestion.question} />
+                </CardTitle>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-2.5 pt-0">
+          <CardContent className="p-6 sm:p-8 space-y-4">
             {["a", "b", "c", "d"].map((opt) => {
               const optionKey = `option_${opt}` as keyof MCQ;
               const isSelected = answers[currentQuestion.id] === opt;
@@ -388,20 +395,30 @@ const StudentExamInterface = () => {
                 <button
                   key={opt}
                   onClick={() => handleSelectOption(opt)}
-                  className={`w-full p-3 sm:p-4 text-left rounded-xl border-2 transition-all ${isSelected
-                    ? "border-primary bg-primary/10"
-                    : "border-border hover:border-primary/50"
+                  className={`w-full p-4 sm:p-5 text-left rounded-2xl border-2 transition-all duration-200 group relative overflow-hidden ${isSelected
+                    ? "border-primary bg-primary/5 shadow-md"
+                    : "border-border/50 bg-card hover:border-primary/30 hover:bg-muted/30"
                     }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-4">
                     <span
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
+                      className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-base font-bold transition-all shadow-sm flex-shrink-0 ${isSelected
+                        ? "bg-primary text-primary-foreground scale-105"
+                        : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
                         }`}
                     >
                       {opt.toUpperCase()}
                     </span>
-                    <span className="flex-1 text-sm sm:text-base pt-1 break-words leading-relaxed">{currentQuestion[optionKey]}</span>
-                    {isSelected && <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-1" />}
+                    <div className="flex-1 pt-1.5 min-w-0">
+                      <span className="text-base sm:text-lg leading-relaxed break-words whitespace-pre-wrap">
+                        <MathText text={currentQuestion[optionKey] as string} />
+                      </span>
+                    </div>
+                    {isSelected && (
+                      <div className="flex-shrink-0 pt-2">
+                        <CheckCircle className="h-6 w-6 text-primary animate-in zoom-in duration-300" />
+                      </div>
+                    )}
                   </div>
                 </button>
               );

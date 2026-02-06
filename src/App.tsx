@@ -20,6 +20,7 @@ import TestInterface from "./pages/TestInterface";
 import StudentInstitutes from "./pages/StudentInstitutes";
 import StudentExams from "./pages/StudentExams";
 import StudentPayments from "./pages/StudentPayments";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageTransition from "./components/PageTransition";
@@ -147,6 +148,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <StudentPayments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <Leaderboard />
                 </ProtectedRoute>
               }
             />

@@ -26,7 +26,8 @@ import {
   Sparkles,
   Sun,
   Moon,
-  Palette
+  Palette,
+  Trophy
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -222,6 +223,15 @@ export const AppNavbar = () => {
               onClick={() => navigate(getDashboardRoute())}
               active={isActive(getDashboardRoute())}
             />
+
+            {!isAdmin && !isInstitute && !isContentCreator && (
+              <NavItem
+                icon={Trophy}
+                label="Ranking"
+                onClick={() => navigate("/student/leaderboard")}
+                active={isActive("/student/leaderboard")}
+              />
+            )}
 
             {/* Subjects Dropdown - For students */}
             {!isAdmin && !isInstitute && !isContentCreator && (
@@ -474,6 +484,14 @@ export const AppNavbar = () => {
                       label="Dashboard"
                       onClick={() => handleNavClick(getDashboardRoute())}
                     />
+
+                    {!isAdmin && !isInstitute && !isContentCreator && (
+                      <MobileNavSection
+                        icon={Trophy}
+                        label="Ranking"
+                        onClick={() => handleNavClick("/student/leaderboard")}
+                      />
+                    )}
 
                     {/* Student-specific navigation */}
                     {!isAdmin && !isInstitute && !isContentCreator && (

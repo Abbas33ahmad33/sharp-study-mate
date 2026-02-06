@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner";
 import { Plus, Trash2, Check, Upload, Download, Loader2 } from "lucide-react";
 import { useRef } from "react";
+import MathText from "@/components/MathText";
 
 interface ExamQuestionsManagerProps {
   examId: string;
@@ -467,7 +468,9 @@ export const ExamQuestionsManager = ({
                               <Check className="h-4 w-4" />
                             </Button>
                           </TableCell>
-                          <TableCell className="text-sm">{mcq.question}</TableCell>
+                          <TableCell className="text-sm max-w-[300px] truncate">
+                            <MathText text={mcq.question} />
+                          </TableCell>
                           <TableCell className="hidden md:table-cell text-sm">
                             Option {mcq.correct_option.toUpperCase()}
                           </TableCell>
@@ -642,7 +645,11 @@ export const ExamQuestionsManager = ({
                   {instituteMcqs.map((mcq, index) => (
                     <div key={mcq.id} className="p-4 border rounded-lg space-y-2">
                       <div className="flex justify-between items-start">
-                        <p className="font-medium">Q{index + 1}: {mcq.question}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium break-words leading-relaxed">
+                            Q{index + 1}: <MathText text={mcq.question} />
+                          </p>
+                        </div>
                         <Button
                           size="icon"
                           variant="ghost"
@@ -653,16 +660,16 @@ export const ExamQuestionsManager = ({
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <p className={mcq.correct_option === "a" ? "text-green-600 font-medium" : ""}>
-                          A: {mcq.option_a}
+                          A: <MathText text={mcq.option_a} />
                         </p>
                         <p className={mcq.correct_option === "b" ? "text-green-600 font-medium" : ""}>
-                          B: {mcq.option_b}
+                          B: <MathText text={mcq.option_b} />
                         </p>
                         <p className={mcq.correct_option === "c" ? "text-green-600 font-medium" : ""}>
-                          C: {mcq.option_c}
+                          C: <MathText text={mcq.option_c} />
                         </p>
                         <p className={mcq.correct_option === "d" ? "text-green-600 font-medium" : ""}>
-                          D: {mcq.option_d}
+                          D: <MathText text={mcq.option_d} />
                         </p>
                       </div>
                     </div>
