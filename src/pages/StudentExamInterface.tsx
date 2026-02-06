@@ -30,7 +30,7 @@ interface ExamData {
 const StudentExamInterface = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [exam, setExam] = useState<ExamData | null>(null);
   const [questions, setQuestions] = useState<MCQ[]>([]);
@@ -41,12 +41,16 @@ const StudentExamInterface = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    // Wait for auth to finish loading
+    if (authLoading) return;
+    
+    // Only redirect if auth is done and no user
     if (!user) {
       navigate("/auth");
       return;
     }
     loadExam();
-  }, [examId, user]);
+  }, [examId, user, authLoading]);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
