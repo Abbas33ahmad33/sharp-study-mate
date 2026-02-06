@@ -28,6 +28,7 @@ const ExamCard = ({ exam }: ExamCardProps) => {
     let status: 'upcoming' | 'live' | 'expired' = 'live';
     let statusText = '';
 
+    // Only check time restrictions if they are actually set
     if (opensAt && now < opensAt) {
         status = 'upcoming';
         statusText = `Opens: ${opensAt.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`;
@@ -37,6 +38,10 @@ const ExamCard = ({ exam }: ExamCardProps) => {
     } else if (closesAt) {
         status = 'live';
         statusText = `Ends: ${closesAt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
+    } else {
+        // No time restrictions - always available
+        status = 'live';
+        statusText = 'Available';
     }
 
     const handleClick = () => {
