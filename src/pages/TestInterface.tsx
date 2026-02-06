@@ -373,13 +373,15 @@ const TestInterface = () => {
           {/* Question Card */}
           <Card className="border-0 shadow-elevated bg-card">
             <CardContent className="p-5">
-              <div className="flex items-start gap-3 mb-4">
+              <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <span className="font-bold text-primary">Q{currentIndex + 1}</span>
                 </div>
-                <h3 className="text-lg font-semibold leading-relaxed">
-                  <MathText text={currentMCQ.question} />
-                </h3>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base sm:text-lg font-semibold leading-relaxed break-words">
+                    <MathText text={currentMCQ.question} />
+                  </h3>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -388,7 +390,7 @@ const TestInterface = () => {
           <div className="space-y-3">
             {!showFeedback ? (
               <RadioGroup value={selectedOption} onValueChange={setSelectedOption}>
-                {["A", "B", "C", "D"].map((option, idx) => (
+                {["A", "B", "C", "D"].map((option) => (
                   <div
                     key={option}
                     className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-200 ${selectedOption === option
@@ -398,15 +400,15 @@ const TestInterface = () => {
                   >
                     <label
                       htmlFor={`option-${option}`}
-                      className="flex items-center gap-4 p-4 cursor-pointer"
+                      className="flex items-start gap-3 p-4 cursor-pointer"
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all ${selectedOption === option
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all ${selectedOption === option
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary'
                         }`}>
                         {option}
                       </div>
-                      <span className="flex-1 text-base">
+                      <span className="flex-1 text-sm sm:text-base pt-1.5 break-words leading-relaxed">
                         <MathText text={currentMCQ[`option_${option.toLowerCase()}` as keyof MCQ]} />
                       </span>
                       <RadioGroupItem value={option} id={`option-${option}`} className="sr-only" />
@@ -434,13 +436,13 @@ const TestInterface = () => {
 
                   return (
                     <div key={option} className={`rounded-xl border-2 p-4 ${borderClass} transition-all duration-200`}>
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}>
+                      <div className="flex items-start gap-3">
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                           {isSelected && isCorrect && <CheckCircle2 className="w-5 h-5" />}
                           {isSelected && !isCorrect && <XCircle className="w-5 h-5" />}
                           {!isSelected && <span className="font-bold text-sm">{option}</span>}
                         </div>
-                        <span className="flex-1 text-base">
+                        <span className="flex-1 text-sm sm:text-base pt-1 break-words leading-relaxed">
                           <MathText text={optionText} />
                         </span>
                       </div>
@@ -451,25 +453,13 @@ const TestInterface = () => {
             )}
           </div>
 
-          {/* Feedback Card */}
+          {/* Feedback - Simple inline message */}
           {showFeedback && (
-            <Card className={`border-2 overflow-hidden ${isCorrect ? "border-success" : "border-destructive"}`}>
-              <div className={`p-4 ${isCorrect ? "bg-success/10" : "bg-destructive/10"}`}>
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isCorrect ? "bg-success text-success-foreground" : "bg-destructive text-destructive-foreground"}`}>
-                    {isCorrect ? <CheckCircle2 className="w-6 h-6" /> : <XCircle className="w-6 h-6" />}
-                  </div>
-                  <div>
-                    <p className={`font-bold text-lg ${isCorrect ? "text-success" : "text-destructive"}`}>
-                      {isCorrect ? "Correct! 🎉" : "Incorrect"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {isCorrect ? "Great job! Keep going!" : "Review and try again next time"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <div className={`text-center py-3 px-4 rounded-xl ${isCorrect ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}>
+              <p className="font-bold text-base">
+                {isCorrect ? "Correct! 🎉" : "Incorrect ❌"}
+              </p>
+            </div>
           )}
         </div>
       </div>

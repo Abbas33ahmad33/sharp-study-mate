@@ -267,6 +267,7 @@ export type Database = {
       }
       institute_exams: {
         Row: {
+          closes_at: string | null
           created_at: string
           created_by: string
           description: string | null
@@ -276,11 +277,13 @@ export type Database = {
           id: string
           institute_id: string
           is_active: boolean
+          opens_at: string | null
           subject_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          closes_at?: string | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -290,11 +293,13 @@ export type Database = {
           id?: string
           institute_id: string
           is_active?: boolean
+          opens_at?: string | null
           subject_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          closes_at?: string | null
           created_at?: string
           created_by?: string
           description?: string | null
@@ -304,6 +309,7 @@ export type Database = {
           id?: string
           institute_id?: string
           is_active?: boolean
+          opens_at?: string | null
           subject_id?: string | null
           title?: string
           updated_at?: string

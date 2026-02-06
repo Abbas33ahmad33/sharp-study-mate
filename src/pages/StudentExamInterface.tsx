@@ -367,14 +367,15 @@ const StudentExamInterface = () => {
       </div>
 
       {/* Question */}
-      <div className="max-w-4xl mx-auto p-4 space-y-6">
+      <div className="max-w-4xl mx-auto p-4 space-y-4">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">
-              Q{currentIndex + 1}. {currentQuestion.question}
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg leading-relaxed break-words">
+              <span className="text-primary font-bold mr-2">Q{currentIndex + 1}.</span>
+              {currentQuestion.question}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2.5 pt-0">
             {["a", "b", "c", "d"].map((opt) => {
               const optionKey = `option_${opt}` as keyof MCQ;
               const isSelected = answers[currentQuestion.id] === opt;
@@ -383,20 +384,20 @@ const StudentExamInterface = () => {
                 <button
                   key={opt}
                   onClick={() => handleSelectOption(opt)}
-                  className={`w-full p-4 text-left rounded-lg border transition-all ${isSelected
+                  className={`w-full p-3 sm:p-4 text-left rounded-xl border-2 transition-all ${isSelected
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
                     }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-start gap-3">
                     <span
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
                         }`}
                     >
                       {opt.toUpperCase()}
                     </span>
-                    <span>{currentQuestion[optionKey]}</span>
-                    {isSelected && <CheckCircle className="ml-auto h-5 w-5 text-primary" />}
+                    <span className="flex-1 text-sm sm:text-base pt-1 break-words leading-relaxed">{currentQuestion[optionKey]}</span>
+                    {isSelected && <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-1" />}
                   </div>
                 </button>
               );
