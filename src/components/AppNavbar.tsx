@@ -410,10 +410,10 @@ export const AppNavbar = () => {
                 variant="ghost"
                 size="icon"
                 onClick={handleSignOut}
-                className="md:hidden w-10 h-10 text-destructive hover:bg-destructive/10"
+                className="md:hidden w-10 h-10 text-white bg-destructive hover:bg-destructive/90 rounded-xl shadow-lg shadow-destructive/20 border-2 border-white/20 animate-pulse-glow"
                 title="Sign Out"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-5 h-5 flex-shrink-0" />
               </Button>
             )}
 
@@ -496,11 +496,11 @@ export const AppNavbar = () => {
                     <div className="p-2 pt-0 mb-4 border-b">
                       <Button
                         variant="destructive"
-                        className="w-full h-12 justify-center gap-3 rounded-xl shadow-sm"
+                        className="w-full h-14 justify-center gap-3 rounded-2xl shadow-lg shadow-destructive/20 font-black text-lg border-b-4 border-destructive-foreground/20 active:border-b-0 transition-all"
                         onClick={() => { setMobileMenuOpen(false); handleSignOut(); }}
                       >
-                        <LogOut className="w-4 h-4" />
-                        Quick Sign Out
+                        <LogOut className="w-5 h-5" strokeWidth={3} />
+                        EXIT / LOGOUT
                       </Button>
                     </div>
 

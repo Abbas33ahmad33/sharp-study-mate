@@ -243,28 +243,36 @@ export const useAuth = () => {
     isSigningOut.current = true;
 
     try {
-      // Fire and forget session cleanup (non-critical)
-      if (user?.id) {
-        supabase
-          .from("user_sessions")
-          .delete()
-          .eq("user_id", user.id)
-          .then(() => { }); // Don't await
+      // 1. CLEAR STORAGE MANUALLY (The "Nuclear" way)
+      // This ensures no ghost sessions remain in LocalStorage
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('sb-') || key.includes('supabase') || key === 'session_token')) {
+          keysToRemove.push(key);
+        }
       }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
 
-      // Clear local state immediately for instant UI response
-      localStorage.removeItem("session_token");
+      // 2. Clear all internal memory states
       setUser(null);
       setSession(null);
       setUserRole(null);
       setSessionToken(null);
 
-      // Perform global sign out 
-      await supabase.auth.signOut({ scope: 'global' });
+      // 3. Inform Supabase & Global Sign out
+      // We use global scope and a short timeout to ensure it tries even if network is flaky
+      await Promise.race([
+        supabase.auth.signOut({ scope: 'global' }),
+        new Promise(resolve => setTimeout(resolve, 1000)) // Force continue after 1s
+      ]);
+
     } catch (error) {
-      console.error("Error during sign out:", error);
+      console.error("Error during nuclear sign out:", error);
     } finally {
       isSigningOut.current = false;
+      // 4. FINAL REDIRECT (Ensuring we leave the current state)
+      window.location.href = "/auth";
     }
   };
 
