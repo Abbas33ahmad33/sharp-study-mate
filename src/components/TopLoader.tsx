@@ -12,7 +12,7 @@ const TopLoader = () => {
 
         const timer = setTimeout(() => {
             nprogress.done();
-        }, 300); // Small delay to make it visible
+        }, 100); // reduced from 300ms for faster feedback
 
         return () => {
             clearTimeout(timer);

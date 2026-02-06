@@ -44,14 +44,13 @@ const Index = () => {
       <section className="relative min-h-[100dvh] flex items-center justify-center pt-20 overflow-hidden">
         {/* Dynamic Mesh Background */}
         <div className="absolute inset-0 z-0 opacity-40 dark:opacity-20 pointer-events-none">
-          <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-purple-500/30 rounded-full blur-[120px] animate-blob mix-blend-multiply dark:mix-blend-screen" />
-          <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-blue-500/30 rounded-full blur-[120px] animate-blob animation-delay-2000 mix-blend-multiply dark:mix-blend-screen" />
-          <div className="absolute bottom-[-20%] left-[20%] w-[60vw] h-[60vw] bg-pink-500/30 rounded-full blur-[120px] animate-blob animation-delay-4000 mix-blend-multiply dark:mix-blend-screen" />
+          <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-purple-500/30 rounded-full blur-[120px] animate-blob mix-blend-multiply dark:mix-blend-screen will-change-transform" />
+          <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-blue-500/30 rounded-full blur-[120px] animate-blob animation-delay-2000 mix-blend-multiply dark:mix-blend-screen will-change-transform" />
+          <div className="absolute bottom-[-20%] left-[20%] w-[60vw] h-[60vw] bg-pink-500/30 rounded-full blur-[120px] animate-blob animation-delay-4000 mix-blend-multiply dark:mix-blend-screen will-change-transform" />
         </div>
 
         {/* Grid Pattern Overlay */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-0 pointer-events-none mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] z-0 pointer-events-none"></div>
 
         <div className="container relative z-10 px-4 text-center">
           {/* Badge */}

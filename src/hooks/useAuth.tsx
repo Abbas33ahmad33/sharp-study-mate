@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -276,12 +276,12 @@ export const useAuth = () => {
     }
   };
 
-  return {
+  return useMemo(() => ({
     user,
     session,
     loading,
     userRole,
     signOut,
     sessionToken,
-  };
+  }), [user, session, loading, userRole, sessionToken]);
 };

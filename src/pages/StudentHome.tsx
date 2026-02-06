@@ -14,8 +14,7 @@ import {
     Award,
     BookOpen,
     Sparkles,
-    User,
-    LogOut
+    User
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AppNavbar from "@/components/AppNavbar";
@@ -52,7 +51,7 @@ const HomeSkeleton = () => (
 );
 
 const StudentHome = () => {
-    const { user, signOut } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState({
         totalTests: 0,
@@ -215,27 +214,6 @@ const StudentHome = () => {
                                                 </div>
                                                 <Button className="w-full rounded-xl font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
                                                     View Rankings <ChevronRight className="w-4 h-4 ml-1" />
-                                                </Button>
-                                            </div>
-                                        </Card>
-
-                                        <Card
-                                            className="group relative overflow-hidden rounded-[2.5rem] border-none shadow-xl shadow-destructive/10 bg-gradient-to-br from-destructive/5 to-transparent dark:from-destructive/10 dark:to-transparent p-7 cursor-pointer transform transition-all active:scale-95 touch-manipulation"
-                                            onClick={signOut}
-                                        >
-                                            <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-active:scale-110 transition-transform">
-                                                <LogOut className="w-40 h-40 rotate-12" />
-                                            </div>
-                                            <div className="relative z-10 space-y-4">
-                                                <div className="bg-destructive/10 w-12 h-12 rounded-2xl flex items-center justify-center">
-                                                    <LogOut className="w-6 h-6 text-destructive" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-2xl font-black tracking-tight text-destructive">Sign Out</h3>
-                                                    <p className="text-slate-500 text-sm font-medium">Log out of your account securely and switch users.</p>
-                                                </div>
-                                                <Button variant="destructive" className="w-full rounded-xl font-bold shadow-lg shadow-destructive/20">
-                                                    Logout Now <LogOut className="w-4 h-4 ml-1" />
                                                 </Button>
                                             </div>
                                         </Card>
