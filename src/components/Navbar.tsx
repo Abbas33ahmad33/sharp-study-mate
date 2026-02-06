@@ -9,12 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  BookOpen, 
-  ChevronDown, 
-  GraduationCap, 
-  Building2, 
-  User, 
+import {
+  BookOpen,
+  ChevronDown,
+  GraduationCap,
+  Building2,
+  User,
   LogOut,
   LayoutDashboard,
   Menu,
@@ -49,11 +49,11 @@ export const Navbar = () => {
 
   useEffect(() => {
     fetchSubjects();
-    
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -84,7 +84,8 @@ export const Navbar = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/");
+    // Use hard refresh for clean logout
+    window.location.href = "/";
   };
 
   const getDashboardRoute = () => {
@@ -96,11 +97,10 @@ export const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
           ? "bg-background/95 backdrop-blur-md shadow-md border-b border-border"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">

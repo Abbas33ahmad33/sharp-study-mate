@@ -7,13 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { 
-  BookOpen, 
-  LogIn, 
-  UserPlus, 
-  Building2, 
-  GraduationCap, 
-  Eye, 
+import {
+  BookOpen,
+  LogIn,
+  UserPlus,
+  Building2,
+  GraduationCap,
+  Eye,
   EyeOff,
   ArrowLeft,
   Sparkles,
@@ -27,23 +27,23 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [signupType, setSignupType] = useState<"student" | "institute" | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Login states
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  
+
   // Student signup states
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
   const [studentPassword, setStudentPassword] = useState("");
   const [studentMobile, setStudentMobile] = useState("");
   const [instituteCode, setInstituteCode] = useState("");
-  
+
   // Institute signup states
   const [instituteName, setInstituteName] = useState("");
   const [instituteEmail, setInstituteEmail] = useState("");
   const [institutePassword, setInstitutePassword] = useState("");
-  
+
   const [resetEmail, setResetEmail] = useState("");
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
@@ -52,19 +52,19 @@ const Auth = () => {
   useEffect(() => {
     const instituteParam = searchParams.get("institute");
     const examParam = searchParams.get("exam");
-    
+
     if (instituteParam) {
       setInstituteCode(instituteParam);
       setSignupType("student");
     }
-    
+
     if (examParam) {
       localStorage.setItem("pending_exam_code", examParam);
     }
 
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const type = hashParams.get('type');
-    
+
     if (type === 'recovery') {
       setIsPasswordRecovery(true);
       return;
@@ -103,7 +103,7 @@ const Auth = () => {
       const isAdmin = roles.some((r) => r.role === "admin");
       const isInstitute = roles.some((r) => r.role === "institute");
       const isContentCreator = roles.some((r) => r.role === "content_creator");
-      
+
       if (isAdmin) navigate("/admin");
       else if (isInstitute) navigate("/institute");
       else if (isContentCreator) navigate("/content-creator");
@@ -153,7 +153,7 @@ const Auth = () => {
           .single();
 
         if (profile && !profile.is_active) {
-          await supabase.auth.signOut();
+          await supabase.auth.signOut({ scope: 'global' });
           toast.error("Your account has been blocked. Please contact support.");
           setLoading(false);
           return;
@@ -221,7 +221,7 @@ const Auth = () => {
 
     try {
       const { data: codeData } = await supabase.rpc("generate_institute_code");
-      
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: instituteEmail,
         password: institutePassword,
@@ -436,7 +436,7 @@ const Auth = () => {
                         <p className="text-center text-muted-foreground text-sm">
                           Choose how you want to register
                         </p>
-                        
+
                         <Button
                           variant="outline"
                           className="w-full h-auto py-5 flex items-center gap-4 justify-start px-5 border-2 hover:border-primary/50 hover:bg-primary/5 transition-all btn-touch"
@@ -450,7 +450,7 @@ const Auth = () => {
                             <span className="text-muted-foreground text-xs">Practice MCQs & take exams</span>
                           </div>
                         </Button>
-                        
+
                         <Button
                           variant="outline"
                           className="w-full h-auto py-5 flex items-center gap-4 justify-start px-5 border-2 hover:border-secondary/50 hover:bg-secondary/5 transition-all btn-touch"
@@ -547,9 +547,9 @@ const Auth = () => {
     <div className="min-h-screen flex flex-col bg-gradient-glow bg-gradient-animated safe-top safe-bottom">
       {/* Header with back button */}
       <div className="flex items-center justify-between p-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => setSignupType(null)}
           className="w-10 h-10 rounded-full"
         >
@@ -568,9 +568,8 @@ const Auth = () => {
       <div className="flex-1 flex items-start justify-center px-4 pt-4 pb-8">
         <div className="w-full max-w-md animate-slide-up">
           <div className="text-center mb-6">
-            <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${
-              signupType === "student" ? "bg-gradient-hero" : "bg-gradient-to-br from-secondary to-accent"
-            }`}>
+            <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${signupType === "student" ? "bg-gradient-hero" : "bg-gradient-to-br from-secondary to-accent"
+              }`}>
               {signupType === "student" ? (
                 <GraduationCap className="w-8 h-8 text-primary-foreground" />
               ) : (
@@ -581,8 +580,8 @@ const Auth = () => {
               {signupType === "student" ? "Student Registration" : "Institute Registration"}
             </h2>
             <p className="text-muted-foreground text-sm mt-1">
-              {signupType === "student" 
-                ? "Create your account to start learning" 
+              {signupType === "student"
+                ? "Create your account to start learning"
                 : "Register your institute to manage exams"
               }
             </p>

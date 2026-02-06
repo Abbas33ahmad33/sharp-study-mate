@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -109,11 +109,15 @@ export const useAuth = () => {
     setSessionToken(null);
   }, []);
 
+  const isSigningOut = useRef(false);
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
+      if (isSigningOut.current) return;
+
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -235,19 +239,32 @@ export const useAuth = () => {
   };
 
   const signOut = async () => {
-    // Remove session from database
-    if (user?.id) {
-      await supabase
-        .from("user_sessions")
-        .delete()
-        .eq("user_id", user.id);
+    if (isSigningOut.current) return;
+    isSigningOut.current = true;
+
+    try {
+      // Remove session from database
+      if (user?.id) {
+        await supabase
+          .from("user_sessions")
+          .delete()
+          .eq("user_id", user.id);
+      }
+
+      // Clear local state first
+      localStorage.removeItem("session_token");
+      setUser(null);
+      setSession(null);
+      setUserRole(null);
+      setSessionToken(null);
+
+      // Perform global sign out out
+      await supabase.auth.signOut({ scope: 'global' });
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    } finally {
+      isSigningOut.current = false;
     }
-    localStorage.removeItem("session_token");
-    await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    setUserRole(null);
-    setSessionToken(null);
   };
 
   return {

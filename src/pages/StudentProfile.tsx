@@ -9,12 +9,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
 const StudentProfile = () => {
-    const { user, userRole } = useAuth();
+    const { user, userRole, signOut } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
-        navigate("/auth");
+        await signOut();
+        window.location.href = "/auth";
     };
 
     return (

@@ -97,7 +97,8 @@ export const AppNavbar = () => {
   const handleSignOut = async () => {
     await signOut();
     toast.success("Logged out successfully");
-    navigate("/");
+    // Hard refresh to clear all memory states
+    window.location.href = "/auth";
   };
 
   const getDashboardRoute = () => {
