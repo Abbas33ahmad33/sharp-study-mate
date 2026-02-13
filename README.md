@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Sharp Study Mate - Live 🚀
 
 ## Project info
 
