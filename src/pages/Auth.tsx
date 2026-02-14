@@ -177,7 +177,7 @@ const Auth = () => {
         email: studentEmail,
         password: studentPassword,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
           data: {
             full_name: studentName,
             mobile_number: studentMobile,
@@ -226,7 +226,7 @@ const Auth = () => {
         email: instituteEmail,
         password: institutePassword,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
           data: {
             full_name: instituteName,
             user_type: "institute",
@@ -264,7 +264,7 @@ const Auth = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth`,
+        redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}#/auth`,
       });
 
       if (error) throw error;
